@@ -37,5 +37,6 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	printf("%d\n", matchedLines);
+	fclose(fp);
 	exit(EXIT_SUCCESS);
 }

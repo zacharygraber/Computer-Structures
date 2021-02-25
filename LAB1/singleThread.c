@@ -41,6 +41,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	printf("%s Count: %d\n", targetString, matches);
+	fclose(fp);
 
 	// Second File
 
@@ -62,6 +63,7 @@ int main(int argc, char* argv[]) {
 		}
 	}
 	printf("%s Count: %d\n", targetString, matches);
+	fclose(fp);
 
 
 	exit(EXIT_SUCCESS);
