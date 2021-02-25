@@ -31,14 +31,16 @@ int main(int argc, char* argv[]) {
 	
 	size_t length;
 	char* thisLine;
-	int matchedLines = 0;
+	int matches = 0;
 	while (getline(&thisLine, &length, fp) != -1) {
-		// If targetString is a substring of thisLine, add one to the count
-		if (strstr(thisLine, targetString) != NULL) {
-			matchedLines++;
+		// Find the first occurrence (if any) of the targetString in thisLine and save it back in thisLine
+		while ((thisLine = strstr(thisLine, targetString)) != NULL) {
+			matches++;
+			// Increment the pointer so it doesn't "find" the same instance again and get stuck.
+			thisLine++;
 		}
 	}
-	printf("%s Count: %d\n", targetString, matchedLines);
+	printf("%s Count: %d\n", targetString, matches);
 
 	// Second File
 
@@ -51,14 +53,15 @@ int main(int argc, char* argv[]) {
 	}
 
 
-	matchedLines = 0;
+	matches = 0;
 	while (getline(&thisLine, &length, fp) != -1) {
 		// If targetString is a substring of thisLine, add one to the count
-		if (strstr(thisLine, targetString) != NULL) {
-			matchedLines++;
+		while ((thisLine = strstr(thisLine, targetString)) != NULL) {
+			matches++;
+			thisLine++;
 		}
 	}
-	printf("%s Count: %d\n", targetString, matchedLines);
+	printf("%s Count: %d\n", targetString, matches);
 
 
 	exit(EXIT_SUCCESS);
