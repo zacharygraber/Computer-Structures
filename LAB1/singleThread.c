@@ -29,8 +29,8 @@ int main(int argc, char* argv[]) {
 		exit(EXIT_FAILURE);
 	}
 	
-	size_t length;
-	char* thisLine;
+	size_t length = 0;
+	char* thisLine = NULL;
 	int matches = 0;
 	while (getline(&thisLine, &length, fp) != -1) {
 		// Find the first occurrence (if any) of the targetString in thisLine and save it back in thisLine
@@ -39,6 +39,8 @@ int main(int argc, char* argv[]) {
 			// Increment the pointer so it doesn't "find" the same instance again and get stuck.
 			thisLine++;
 		}
+		thisLine = NULL;
+		length = 0;
 	}
 	printf("%s Count: %d\n", targetString, matches);
 	fclose(fp);
@@ -61,6 +63,8 @@ int main(int argc, char* argv[]) {
 			matches++;
 			thisLine++;
 		}
+		thisLine = NULL;
+		length = 0;
 	}
 	printf("%s Count: %d\n", targetString, matches);
 	fclose(fp);
