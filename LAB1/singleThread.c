@@ -31,16 +31,17 @@ int main(int argc, char* argv[]) {
 	
 	size_t length = 0;
 	char* thisLine = NULL;
+	char* temp;
+	int targetLen = strlen(targetString);
 	int matches = 0;
 	while (getline(&thisLine, &length, fp) != -1) {
+		temp = thisLine;
 		// Find the first occurrence (if any) of the targetString in thisLine and save it back in thisLine
-		while ((thisLine = strstr(thisLine, targetString)) != NULL) {
+		while ((temp = strstr(temp, targetString)) != NULL) {
 			matches++;
 			// Increment the pointer so it doesn't "find" the same instance again and get stuck.
-			thisLine++;
+			temp += targetLen;
 		}
-		thisLine = NULL;
-		length = 0;
 	}
 	printf("%s Count: %d\n", targetString, matches);
 	fclose(fp);
@@ -49,6 +50,7 @@ int main(int argc, char* argv[]) {
 
 	fname = argv[3];
 	targetString = argv[4];
+	targetLen = strlen(targetString);
 	// Make sure the file opens correctly
 	if ((fp = fopen(fname, "r")) == NULL) {
 		printf("FATAL: Could not open file %s\n", fname);
@@ -58,13 +60,12 @@ int main(int argc, char* argv[]) {
 
 	matches = 0;
 	while (getline(&thisLine, &length, fp) != -1) {
+		temp = thisLine;
 		// If targetString is a substring of thisLine, add one to the count
-		while ((thisLine = strstr(thisLine, targetString)) != NULL) {
+		while ((temp = strstr(temp, targetString)) != NULL) {
 			matches++;
-			thisLine++;
+			temp += targetLen;
 		}
-		thisLine = NULL;
-		length = 0;
 	}
 	printf("%s Count: %d\n", targetString, matches);
 	fclose(fp);
