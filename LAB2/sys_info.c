@@ -9,6 +9,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
+#include <errno.h>
 
 int main(int argc, char* argv[]) {
 	if (argc != 3) {
@@ -79,7 +80,10 @@ int main(int argc, char* argv[]) {
 		// DEBUGGING
 		// printf("path_final: %s, arg1_read: %s, arg2_read: %s\n", path_final, arg1_read, arg2_read);
 
-		execl(path_final, arg1_read, arg2_read, NULL);
-		exit(EXIT_SUCCESS);	
+		if (execl(path_final, arg1_read, arg2_read, NULL) == -1) {
+			int error_no = errno;
+			printf("ERROR: execl failed with Error Number %d\n", error_no);
+			exit(EXIT_FAILURE);			
+		}	
 	}
 }

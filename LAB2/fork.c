@@ -23,11 +23,11 @@ int main(int argc, char* argv[]) {
 	
 	// Child
 	if (pid == 0) {
-		printf("%d\n", --input);
+		printf("Child: %d\n", --input);
 	}
 	// Parent
 	else {
-		printf("%d\n", ++input);
+		printf("Parent: %d\n", ++input);
 	}
 	exit(EXIT_SUCCESS);
 }
