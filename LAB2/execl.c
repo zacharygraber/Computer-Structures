@@ -20,6 +20,7 @@ int main(int argc, char* argv[]) {
 	char path_final[strlen(argv[1]) + strlen(path)];
 	sprintf(path_final, "%s%s", path, argv[1]);
 
+	//printf("path_final: '%s', cmd: '%s', arg: '%s'\n", path_final, argv[1], argv[2]);
 	execl(path_final, argv[1], argv[2], NULL);
 	exit(EXIT_SUCCESS);
 }

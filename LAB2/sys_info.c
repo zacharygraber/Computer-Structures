@@ -9,19 +9,28 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <string.h>
-#include <errno.h>
+#include <fcntl.h>
 
 int main(int argc, char* argv[]) {
 	if (argc != 3) {
 		printf("ERROR: expected 2 positional arguments:\n<exec> <arg>\n");
 		exit(EXIT_FAILURE);
 	}
+
+	// Open pipes
 	int fd[2];
 	if (pipe(fd) == -1) {
 		printf("ERROR: Could not create pipe!\n");
 		exit(EXIT_FAILURE);
 	}
 	const int read_fd = fd[0], write_fd = fd[1];
+	int exit_ret[2];
+        if (pipe(exit_ret) == -1) {
+                printf("ERROR: Could not create pipe!\n");
+                exit(EXIT_FAILURE);
+        }
+        const int read_exit_ret = exit_ret[0], write_exit_ret = exit_ret[1];
+
 	const char* path = "/bin/";
 	
 	const int pid = fork();
@@ -32,6 +41,8 @@ int main(int argc, char* argv[]) {
 
 	// Parent process
 	if (pid != 0) {
+		close(read_fd);
+		close(write_exit_ret);
 		char* exec = argv[1];
 		// If the executable starts with /bin/, then remove it before writing to the pipe
 		if (strncmp(exec, path, strlen(path)) == 0) {
@@ -49,11 +60,21 @@ int main(int argc, char* argv[]) {
 		write(write_fd, &nbytes_2, sizeof(int));
 		write(write_fd, argv[2], nbytes_2);
 		close(write_fd);
-		exit(EXIT_SUCCESS);
+		int exit_stat;
+		if (read(read_exit_ret, &exit_stat, sizeof(int)) == 0) {
+			close(read_exit_ret);
+			exit(EXIT_SUCCESS);
+		}
+		close(read_exit_ret);
+		exit(EXIT_FAILURE);
 	}
 
 	// Child Process
 	else {
+		close(read_exit_ret);
+		fcntl(write_exit_ret, F_SETFD, fcntl(write_exit_ret, F_GETFD) | FD_CLOEXEC);
+		// Close the write end of the pipe
+		close(write_fd);
 		// Get the number of bytes to expect for arg1
 		int nbytes_1;
 		read(read_fd, &nbytes_1, sizeof(int));
@@ -78,12 +99,14 @@ int main(int argc, char* argv[]) {
 		sprintf(path_final, "%s%s", path, arg1_read);
 
 		// DEBUGGING
-		// printf("path_final: %s, arg1_read: %s, arg2_read: %s\n", path_final, arg1_read, arg2_read);
+		printf("nbytes_1: %d, nbytes_2: %d\n", nbytes_1, nbytes_2);
+		printf("path_final: '%s', arg1_read: '%s', arg2_read: '%s'\n", path_final, arg1_read, arg2_read);
 
-		if (execl(path_final, arg1_read, arg2_read, NULL) == -1) {
-			int error_no = errno;
-			printf("ERROR: execl failed with Error Number %d\n", error_no);
-			exit(EXIT_FAILURE);			
-		}	
+		execl(path_final, arg1_read, arg2_read, NULL);
+		printf("ERROR: execl failed\n");
+		int exit_status = 1;
+		write(write_exit_ret, &exit_status, sizeof(int));
+		close(write_exit_ret);
+		exit(EXIT_FAILURE);			
 	}
 }
