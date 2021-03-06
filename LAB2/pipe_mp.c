@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 	pipe(fd);
 	int read_fd = fd[0], write_fd = fd[1];
 
-	const int nbytes = strlen(argv[1]);
+	const int nbytes = strlen(argv[1])+1;
 	
 	int pid = fork();
 
@@ -38,7 +38,7 @@ int main(int argc, char* argv[]) {
 			exit(EXIT_FAILURE);
 		}
 		close(read_fd);
-		printf("%s\n", arg_read);
+		printf("%s", arg_read);
 		exit(EXIT_SUCCESS);
 	}
 }

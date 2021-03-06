@@ -19,7 +19,7 @@ int main(int argc, char* argv[]) {
 	pipe(fd);
 	int read_fd = fd[0], write_fd = fd[1];
 
-	int nbytes_arg1 = strlen(argv[1]), nbytes_arg2 = strlen(argv[2]);
+	int nbytes_arg1 = strlen(argv[1])+1, nbytes_arg2 = strlen(argv[2])+1;
 
 	// For debugging	
 	// printf("nbytes_arg1: %d, nbytes_arg2: %d\n\n", (int)nbytes_arg1, (int)nbytes_arg2);
