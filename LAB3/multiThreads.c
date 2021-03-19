@@ -10,6 +10,7 @@
 #include <pthread.h>
 #include <string.h>
 #include <stdlib.h>
+#include <sys/time.h>
 
 typedef struct input_args {
 	char* fname;
@@ -17,6 +18,12 @@ typedef struct input_args {
 } IA;
 
 void *pthread_routine(void* arg) {
+	/*
+	// Timing start for thread
+	struct timeval pt_start, pt_stop;
+	gettimeofday(&pt_start, NULL);
+	*/
+
 	IA *args_p = (IA*) arg; // Arg contains the address of an IA struct, so cast it to a struct pointer
 	char* fname = args_p->fname;
 	char* search_string = args_p->search_string;
@@ -47,6 +54,15 @@ void *pthread_routine(void* arg) {
 	// Close the file and finish up
 	fclose(fp);
 	printf("%s Count: %d\n", search_string, matches);
+
+	/*
+	// Timing end
+	gettimeofday(&pt_stop, NULL);
+	long thread_secs = pt_stop.tv_sec - pt_start.tv_sec;
+	long thread_usecs = pt_stop.tv_usec - pt_start.tv_usec;
+	printf("%s TIME = %d secs + %d usecs\n",search_string ,(int)thread_secs, (int)thread_usecs);
+	*/
+
 	return NULL;
 }
 
@@ -55,6 +71,12 @@ int main (int argc, char* argv[]) {
 		printf("ERROR: Expected 4 positional arguments <filename 1> <search string 1> <filename 2> <search string 2>\n");
 		exit(EXIT_FAILURE);
 	}
+	
+	/*
+	// Timing start for main
+	struct timeval start, stop;
+	gettimeofday(&start, NULL);
+	*/
 
 	IA arg1 = {argv[1], argv[2]};
 	IA arg2 = {argv[3], argv[4]};
@@ -65,5 +87,14 @@ int main (int argc, char* argv[]) {
 
 	pthread_join(tids[0], NULL);
 	pthread_join(tids[1], NULL);
+	
+	/*
+	// Timing end
+	gettimeofday(&stop, NULL);
+	long main_secs = stop.tv_sec - start.tv_sec;
+	long main_usecs = stop.tv_usec - start.tv_usec;
+	printf("MAIN TIME = %d secs + %d usecs\n", (int)main_secs, (int)main_usecs);
+	*/
+	
 	exit(EXIT_SUCCESS);
 }
