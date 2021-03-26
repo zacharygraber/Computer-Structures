@@ -28,14 +28,14 @@ void *pthread_routine(void* arg) {
 }
 
 int main(int argc, char* argv[]) {
-    if (argc < 2) {
+    if (argc != 2) {
         printf("ERROR: Expected 1 positional argument <n>\n");
         exit(EXIT_FAILURE);
     }
 
     // Seed the RNG
-    time_t t = time(NULL);
-    srand((unsigned int) t);
+    //time_t t = time(NULL);
+    //srand((unsigned int) t);
 
     // Get the command-line arg
     const int n = atoi(argv[1]);
