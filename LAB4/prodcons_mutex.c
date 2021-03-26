@@ -39,8 +39,8 @@ int main(int argc, char* argv[]) {
 
     // Get the command-line arg
     const int n = atoi(argv[1]);
-    if (n < 1) {
-        printf("ERROR: n cannot be less than 1!\n");
+    if (n == 0) {
+        printf("ERROR: n cannot be 0!\n");
         exit(EXIT_FAILURE);
     }
 
