@@ -80,7 +80,13 @@ void *cons_routine(void* arg) {
 }
 
 
-int main(void) {
+int main(int argc, char* argv[]) {
+    (void)argv[0];
+    if (argc != 1) {
+        printf("ERROR: did not expect any arguments!\n");
+        exit(EXIT_FAILURE);
+    }
+
     // Seed the RNG
     time_t t = time(NULL);
     srand((unsigned int) t);

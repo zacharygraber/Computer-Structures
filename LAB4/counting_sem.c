@@ -30,7 +30,13 @@ void *pthread_C_routine() {
     return NULL;
 }
 
-int main(void) {
+int main(int argc, char* argv[]) {
+    (void)argv[0];
+    if (argc != 1) {
+        printf("ERROR: did not expect any arguments!\n");
+        exit(EXIT_FAILURE);
+    }
+
     // Initialize the semaphore
     sem_init(&sem, 1, 2);
     
