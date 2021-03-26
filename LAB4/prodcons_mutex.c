@@ -21,8 +21,8 @@ void *pthread_routine(void* arg) {
         rand_num = rand() % n;
         sem_wait(&w_mutex);
         x = rand_num;
-        sem_post(&r_mutex);
         printf("writer wrote: %d\n", rand_num);
+        sem_post(&r_mutex);
     }
     return NULL;
 }
@@ -34,8 +34,8 @@ int main(int argc, char* argv[]) {
     }
 
     // Seed the RNG
-    //time_t t = time(NULL);
-    //srand((unsigned int) t);
+    time_t t = time(NULL);
+    srand((unsigned int) t);
 
     // Get the command-line arg
     const int n = atoi(argv[1]);
