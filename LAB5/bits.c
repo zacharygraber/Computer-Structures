@@ -20,7 +20,7 @@ int getByte(int x, int n) {
   // Uses a mask to first clear all bits EXCEPT at byte n, then shifts n to the far "right" side
   // Abuses the fact that False∧x≡False and True∧x≡x
   int mask = 255; // So the mask is 00000000 00000000 00000000 11111111
-  const n_times_8 = n+n+n+n+n+n+n+n; // Get n*8 without using *
+  const int n_times_8 = n+n+n+n+n+n+n+n; // Get n*8 without using *
   mask = mask << n_times_8; // e.g. for n=2, mask is now 00000000 11111111 00000000 00000000
   int result = x & mask; // 0 out all other bits besides the ones in byte n
   return result >> n_times_8;
