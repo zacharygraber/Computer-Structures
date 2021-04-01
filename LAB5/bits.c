@@ -5,7 +5,8 @@
  *   Points: 5
  */
 int bitAnd(int x, int y) {
-  return 2;
+  // Uses De Morgan's Law
+  return ~(x | y);
 }
 
 /* 
@@ -16,7 +17,13 @@ int bitAnd(int x, int y) {
  *   Points: 10
  */
 int getByte(int x, int n) {
-  return 2;
+  // Uses a mask to first clear all bits EXCEPT at byte n, then shifts n to the far "right" side
+  // Abuses the fact that False∧x≡False and True∧x≡x
+  int mask = 255; // So the mask is 00000000 00000000 00000000 11111111
+  const n_times_8 = n+n+n+n+n+n+n+n; // Get n*8 without using *
+  mask = mask << n_times_8; // e.g. for n=2, mask is now 00000000 11111111 00000000 00000000
+  int result = x & mask; // 0 out all other bits besides the ones in byte n
+  return result >> n_times_8;
 }
 
 /* 
@@ -28,7 +35,36 @@ int getByte(int x, int n) {
  *  Points: 10
  */
 int byteSwap(int x, int n, int m) {
-    return 2;
+    // First use the same trick as in getByte() to store byte n in n_temp and m in m_temp
+    // Then abuse the fact that False∧x≡False to clear bytes n and m
+    // Then abuse the fact that 0⊕x=x to set bits
+    
+    // Store original byte at n
+    int mask = 255;
+    const int n_times_8 = n+n+n+n+n+n+n+n;
+    mask = mask << n_times_8;
+    int n_temp = (x & mask) >> n_times_8;
+
+    // Store original byte at m
+    mask = 255;
+    const int m_times_8 = n+n+n+n+n+n+n+n;
+    mask = mask << m_times_8;
+    int m_temp = (x & mask) >> m_times_8;
+
+    // Set all bits in bytes n to 0 then replace them with vals originally at m
+    mask = 255; // Mask is 0x000000FF
+    mask = mask << n_times_8; // For n=2, mask would now be 0x00FF0000
+    x = x & mask; // Clears byte n
+    n_temp = n_temp << m_times_8; // Shift it to the left to get it into byte m's position
+    x = x ^ n_temp;
+
+    // Do the same for m
+    mask = 255;
+    mask = mask << m_times_8;
+    x = x & mask; // Clears byte m
+    m_temp = m_temp << n_times_8;
+    
+    return x ^ m_temp;
 }
 
 /* 
