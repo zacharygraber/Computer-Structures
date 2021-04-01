@@ -102,7 +102,7 @@ int shifting_right_op(int x, int sc) {
  * Points: 5
  */
 int bang(int x) {
-  return ~x;
+  return !x;
 }
 
 /*
