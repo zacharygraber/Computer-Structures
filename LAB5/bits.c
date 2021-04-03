@@ -6,7 +6,7 @@
  */
 int bitAnd(int x, int y) {
   // Uses De Morgan's Law
-  return ~(x | y);
+  return ~(~x | ~y);
 }
 
 /* 
