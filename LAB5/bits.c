@@ -6,7 +6,7 @@
  */
 int bitAnd(int x, int y) {
   // Uses De Morgan's Law
-  return ~(~x | ~y);
+  return ~((~x) | (~y));
 }
 
 /* 
@@ -20,7 +20,7 @@ int getByte(int x, int n) {
   // Uses a mask to first clear all bits EXCEPT at byte n, then shifts n to the far "right" side
   // Abuses the fact that False∧x≡False and True∧x≡x
   int mask = 255; // So the mask is 00000000 00000000 00000000 11111111
-  int result;
+  unsigned result;
   const int n_times_8 = n << 3; // Get n*8 without using *
   mask = mask << n_times_8; // e.g. for n=2, mask is now 00000000 11111111 00000000 00000000
   result = x & mask; // 0 out all other bits besides the ones in byte n
@@ -40,36 +40,40 @@ int byteSwap(int x, int n, int m) {
     // Then abuse the fact that False∧x≡False to clear bytes n and m
     // Then abuse the fact that 0⊕x=x to set bits
     
-    int n_temp;
-    int m_temp;
+    unsigned n_temp;
+    unsigned m_temp;
     int n_times_8;
     int m_times_8;
     // Store original byte at n
     int mask = 255;
     n_times_8 = n << 3;
     mask = mask << n_times_8;
-    n_temp = (x & mask) >> n_times_8;
+    n_temp = x & mask;
+    n_temp = n_temp >> n_times_8;
 
     // Store original byte at m
     mask = 255;
     m_times_8 = m << 3;
     mask = mask << m_times_8;
-    m_temp = (x & mask) >> m_times_8;
+    m_temp = x & mask;
+    m_temp = m_temp >> m_times_8;
 
     // Set all bits in bytes n to 0 then replace them with vals originally at m
     mask = 255; // Mask is 0x000000FF
     mask = mask << n_times_8; // For n=2, mask would now be 0x00FF0000
+    mask = ~mask;
     x = x & mask; // Clears byte n
-    n_temp = n_temp << m_times_8; // Shift it to the left to get it into byte m's position
-    x = x ^ n_temp;
+    m_temp = m_temp << n_times_8; // Shift it to the left to get it into byte m's position
+    x = x ^ m_temp;
 
     // Do the same for m
     mask = 255;
     mask = mask << m_times_8;
+    mask = ~mask;
     x = x & mask; // Clears byte m
-    m_temp = m_temp << n_times_8;
+    n_temp = n_temp << m_times_8;
     
-    return x ^ m_temp;
+    return x ^ n_temp;
 }
 
 /* 
