@@ -21,7 +21,7 @@ int getByte(int x, int n) {
   // Abuses the fact that False∧x≡False and True∧x≡x
   int mask = 255; // So the mask is 00000000 00000000 00000000 11111111
   int result;
-  const int n_times_8 = n+n+n+n+n+n+n+n; // Get n*8 without using *
+  const int n_times_8 = n << 3; // Get n*8 without using *
   mask = mask << n_times_8; // e.g. for n=2, mask is now 00000000 11111111 00000000 00000000
   result = x & mask; // 0 out all other bits besides the ones in byte n
   return result >> n_times_8;
@@ -46,13 +46,13 @@ int byteSwap(int x, int n, int m) {
     int m_times_8;
     // Store original byte at n
     int mask = 255;
-    n_times_8 = n+n+n+n+n+n+n+n;
+    n_times_8 = n << 3;
     mask = mask << n_times_8;
     n_temp = (x & mask) >> n_times_8;
 
     // Store original byte at m
     mask = 255;
-    m_times_8 = n+n+n+n+n+n+n+n;
+    m_times_8 = m << 3;
     mask = mask << m_times_8;
     m_temp = (x & mask) >> m_times_8;
 
