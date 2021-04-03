@@ -20,7 +20,7 @@ int getByte(int x, int n) {
   // Uses a mask to first clear all bits EXCEPT at byte n, then shifts n to the far "right" side
   // Abuses the fact that False∧x≡False and True∧x≡x
   int mask = 255; // So the mask is 00000000 00000000 00000000 11111111
-  unsigned result;
+  unsigned int result;
   const int n_times_8 = n << 3; // Get n*8 without using *
   mask = mask << n_times_8; // e.g. for n=2, mask is now 00000000 11111111 00000000 00000000
   result = x & mask; // 0 out all other bits besides the ones in byte n
@@ -40,8 +40,8 @@ int byteSwap(int x, int n, int m) {
     // Then abuse the fact that False∧x≡False to clear bytes n and m
     // Then abuse the fact that 0⊕x=x to set bits
     
-    unsigned n_temp;
-    unsigned m_temp;
+    unsigned int n_temp;
+    unsigned int m_temp;
     int n_times_8;
     int m_times_8;
     // Store original byte at n
@@ -84,7 +84,7 @@ int byteSwap(int x, int n, int m) {
  *   Points: 15
  */
 int logicalShift(int x, int n) {
-  unsigned result;
+  unsigned int result;
   result = x;
   return result >> n;
 }
@@ -117,7 +117,7 @@ int bang(int x) {
  */
 int bitParity(int x) {
   // Recursively exploit ^ to find if an odd number of 1s are present
-  unsigned temp; // We need logical shifts
+  unsigned int temp; // We need logical shifts
   temp = x ^ (x >> 1);
   temp ^= temp >> 2;
   temp ^= temp >> 4;
