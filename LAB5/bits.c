@@ -84,7 +84,9 @@ int byteSwap(int x, int n, int m) {
  *   Points: 15
  */
 int logicalShift(int x, int n) {
-  return 2;
+  unsigned result;
+  result = x;
+  return result >> n;
 }
 
 /*
@@ -104,7 +106,7 @@ int bitCount(int x) {
  *   Points: 20
  */
 int bang(int x) {
-  return 2;
+  return ~(x & 1);
 }
 
 /*
@@ -114,5 +116,12 @@ int bang(int x) {
  *   Points: 20
  */
 int bitParity(int x) {
-  return 2;
+  // Recursively exploit ^ to find if an odd number of 1s are present
+  unsigned temp; // We need logical shifts
+  temp = x ^ (x >> 1);
+  temp ^= temp >> 2;
+  temp ^= temp >> 4;
+  temp ^= temp >> 8;
+  temp ^= temp >> 16;
+  return temp & 1;
 }
