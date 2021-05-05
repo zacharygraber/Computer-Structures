@@ -42,3 +42,13 @@ At this point it just became a matter of figuring out what `ecx` and `edx` were.
   01000010 00101110 01000100 01101001 01110011 01110010 01100001 01100101 01101100 01101001     <--- ("B.Disraeli")
 ```
 The resulting binary converted to ASCII text is `E"Ojuzldef`.
+
+### Phase 4
+------------------------
+**Solution**: `5 -465`
+
+**How I solved**: I noticed three calls to `sym.explode_bomb` that I wanted to avoid. In order to avoid the first one, I saw that I would need to **not** satisfy `eax <= 1`. This comparison was right after a call to `sscanf`, so my guess was that `eax` was the return value of `sscanf`, which is the number of fields converted. I tried with a couple of inputs, and found that when giving a single non-number string (e.g. "ABCD") `eax` was 0, and if I gave a number (e.g. 10) `eax` was 1. That told me that the function was looking for at least 2 numbers. 
+
+After learning that, the what the inputs actually *were* fell into place. I saw that the next call to explode the bomb happened if a "jump if above" was triggered. In order to avoid that, I needed to avoid the condition that `dword[var_ch] > 7`. I wasn't sure what `dword[var_ch]` was, but I just guessed that the first number needed to be less than 7, and that worked.
+
+For the second input, I put in a random number and stepped forward all the way up until the last explosion call. I saw that I needed `eax == dword[rsp + 8]` in order to avoid the call. I dumped the value at `rsp + 8` and noticed that it was my second input. Then, I found that `eax` was `0xfffffe2f`. Because of all the leading `f`s (1s in binary), I was suspicious that this was a two's complement number. The corresponding number was -465. I tried that for my second input and it worked.
