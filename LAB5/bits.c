@@ -84,9 +84,14 @@ int byteSwap(int x, int n, int m) {
  *   Points: 15
  */
 int logicalShift(int x, int n) {
-  unsigned int result;
-  result = x;
-  return result >> n;
+  // First do an arithmetic shift by n
+  // We then make a mask of all 1s (-1 decimal) and << by 32-n to get 1s in the right place
+  // Then negate the mask to take advantage of x&0=0 and x&1=x to get rid of leading 1s, but preserve data
+  int mask;
+  mask = -1;
+  mask = ~(mask << (32 - n));
+  printf("%d\n", mask);
+  return (x >> n) & mask;
 }
 
 /*
