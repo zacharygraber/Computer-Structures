@@ -14,9 +14,13 @@
 #define MANTISSA_SIZE 23
 #define BIAS 127
 
+void toBinaryString(int num, int numbits, char* target);
+void toBinaryStringUnsigned(int num, int numbits, char* target);
+void toBinaryStringFractional(double num, int numbits, char* target);
+
 int main(int argc, char* argv[]) {
     if (argc != 2) {
-        printf("ERROR: expected 1 positional argument <float>\n");
+        printf("No input given\n");
         exit(EXIT_FAILURE);
     }
     double input = atof(argv[1]);
@@ -30,7 +34,8 @@ int main(int argc, char* argv[]) {
     char integer_part[BIT_DEPTH + 1]; // Stores the int. part in binary
     toBinaryStringUnsigned(abs((int) input), BIT_DEPTH, integer_part);
     char fractional_part[126 + 23 + 1]; // If the exponent is 2^(-126) then we'll need 23 more bits for the mantissa
-    toBinaryStringFractional(input - (int)(input), 126+23, fractional_part);
+    //printf("\n%f\n", abs(input) - (float)((int)abs(input)));
+    toBinaryStringFractional(fabs(input - (int)(input)), 126+23, fractional_part);
     int exp, i;
     if (abs(input) < 1) { // Case when exponent is negative 
         // Go left to right until we encounter a 1
@@ -79,48 +84,15 @@ int main(int argc, char* argv[]) {
     }
     while (!(mantissa_bits_written == MANTISSA_SIZE)) {
         result[mantissa_bits_written+EXP_SIZE+1] = fractional_part[abs(i)];
+	i--;
         mantissa_bits_written++;
     }
+
+    //printf("Input: %f\nInteger: %s\nFraction: %s\nExp: %d\n\n", input, integer_part, fractional_part, exp);
 
     printf("%s\n", result);
 
     exit(EXIT_SUCCESS);
-}
-
-void twosCompBinaryString(int num, int numbits, char* target) {
-    char result[EXP_SIZE + 1];
-
-	// If the number is positive, then all we need to do is set the MSB
-	if (num >= 0) {
-		toBinaryString(num, numbits, result);
-	}
-	// It's easiest just to add a special case for this, since the method below won't work.
-	else if (num == -128) {
-		result[0] = '1';
-		int i;
-		for (i = 1; i < numbits; i++) {
-			result[i] = '0';
-		}
-		result[numbits] = '\0';
-	}
-	else {
-		// Get the binary for the absolute value, negate it, then add 1
-		toBinaryString(abs(num), numbits, result);
-		int i;
-		for (i = 0; i < numbits; i++) {
-			result[i] = (result[i] == '1') ? '0' : '1';
-		}
-		// Goes from right to left in the binary number and flips the first 0 it sees to a 1, flipping 1s to 0s along the way
-		for (i = numbits - 1; i >= 0; i--) {
-			if (result[i] == '0') {
-				result[i] = '1';
-				break;
-			}
-			else {
-				result[i] = '0';
-			}
-		}
-	}
 }
 
 // Converts a natural number to its binary representation
@@ -153,19 +125,21 @@ void toBinaryStringUnsigned(int num, int numbits, char* target) {
 	int i;
 	for (i = numbits - 1; i >= 0; i--) { // Start by checking if greater than 2^6, then 2^5, and so on
 		int bit_index = numbits - (i + 1); // The index in our result array (starts at 1, then 2, etc)
-		int power_of_two = 1 << i; // 1 << i = 1*(2^i)
-		if (num >= power_of_two) {
+		unsigned long power_of_two = 1 << i; // 1 << i = 1*(2^i)
+		if ((unsigned)num >= power_of_two) {
 			result[bit_index] = '1';
 			num -= power_of_two;
 		}
 		else {
 			result[bit_index] = '0';
 		}
+		//printf("bit_index: %d");
 	}
 }
 
 // Converts fractional part of the num to binary
 void toBinaryStringFractional(double num, int numbits, char* target) {
+    //printf("num: %f\n", num);
     // Make a C-string to hold our value
 	char* result = target;
 	result[numbits] = '\0';
