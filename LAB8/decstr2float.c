@@ -51,7 +51,7 @@ int main(int argc, char* argv[]) {
     char mantissa_string[MANTISSA_SIZE];
     strncpy(mantissa_string, input+1+EXP_SIZE, MANTISSA_SIZE);
     unsigned long mantissa = binary_to_int(mantissa_string, MANTISSA_SIZE);
-    printf("Mantissa: %.17g\n", mantissa);
+    printf("Mantissa: %.17g\n", (double)mantissa);
     input_struct.parts.mantissa = mantissa;
 
     printf("Number: %.7g\n", input_struct.result);
