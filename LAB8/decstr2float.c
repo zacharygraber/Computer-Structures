@@ -31,12 +31,12 @@ int main(int argc, char* argv[]) {
     }
     char* input = argv[1];
     int i;
-    for (i = 0; i < BIT_DEPTH; i++) {
-        if (input[i] != '1' || input[i] != '0') {
-            printf("Incorrect input argument\n");
-            exit(EXIT_FAILURE);
-        }
-    }
+    // for (i = 0; i < BIT_DEPTH; i++) {
+    //     if (input[i] != '1' || input[i] != '0') {
+    //         printf("Incorrect input argument\n");
+    //         exit(EXIT_FAILURE);
+    //     }
+    // }
 
     union_special_thing input_struct;
     printf("Sign: %c\n", input[0]);
